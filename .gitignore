@@ -72,5 +72,4 @@ docker-compose.override.yml
 .env
 
 *.tar
-data/
 .vscode/tags
