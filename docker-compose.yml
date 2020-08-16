@@ -182,8 +182,11 @@ services:
     << : *restart_policy
     ports:
       - '9000:80/tcp'
+      - "443:443"
     image: 'nginx:1.16'
     volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
       - type: bind
         read_only: true
         source: ./nginx
@@ -191,6 +194,13 @@ services:
     depends_on:
       - web
       - relay
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+    - ./data/certbot/conf:/etc/letsencrypt
+    - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   relay:
     << : *restart_policy
     image: '$RELAY_IMAGE'
@@ -223,3 +233,6 @@ volumes:
   sentry-kafka-log:
   sentry-smtp-log:
   sentry-clickhouse-log:
+
+
+
