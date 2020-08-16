@@ -157,6 +157,8 @@ services:
       - 'sentry-symbolicator:/data'
   web:
     << : *sentry_defaults
+    ports:
+      - '9000:9000'
   cron:
     << : *sentry_defaults
     command: run cron
@@ -181,8 +183,8 @@ services:
   nginx:
     << : *restart_policy
     ports:
-      - '9000:80/tcp'
-      - "443:443"
+      - '80:80'
+      - '443:443'
     image: 'nginx:1.16'
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
